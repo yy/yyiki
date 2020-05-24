@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tufte.css') }}">
+    <link rel="stylesheet" href="{{ url_for('pygments_css') }}">
+
+    <title>YYiki: {{ page.title }}</title>
+  </head>
+  <body>
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.3/mousetrap.min.js"></script>
+    <script charset="utf-8">
+      Mousetrap.bind('h', function() {window.location.href = '/wiki/Home';}); 
+    </script>
+  </body>
+</html>
