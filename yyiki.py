@@ -1,8 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, url_for
 from flask_flatpages import FlatPages, pygments_style_defs
+
+from forms import SearchForm
 
 app = Flask(__name__)
 
+app.config["SECRET_KEY"] = "98e3fee0a08d82be883a324c47f3fee1"
 
 app.config["FLATPAGES_ROOT"] = "pages"
 app.config["FLATPAGES_EXTENSION"] = ".md"
@@ -37,8 +40,18 @@ def create_page(path):
 @app.route("/wiki/<path:path>/")
 def page(path):
     page = pages.get_or_404(path)
+    form = SearchForm()
     template = page.meta.get("template", "page.html")
-    return render_template(template, page=page)
+    return render_template(template, page=page, form=form)
+
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    form = SearchForm()
+    print(form.query)
+    if form.validate_on_submit():
+        return redirect(f"/wiki/{form.query.data}")
+    return redirect("/wiki/Home")
 
 
 if __name__ == "__main__":
