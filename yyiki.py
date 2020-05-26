@@ -2,12 +2,15 @@ from flask import Flask, render_template
 from flask_flatpages import FlatPages, pygments_style_defs
 
 app = Flask(__name__)
+
+
 app.config["FLATPAGES_ROOT"] = "pages"
 app.config["FLATPAGES_EXTENSION"] = ".md"
 app.config["FLATPAGES_MARKDOWN_EXTENSIONS"] = [
     "codehilite",
     "markdown_katex",
     "mdx_wikilink_plus",
+    "mdx_linkify",
 ]
 app.config["FLATPAGES_EXTENSION_CONFIGS"] = {
     "mdx_wikilink_plus": {"base_url": "/wiki/"}
