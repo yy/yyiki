@@ -3,32 +3,37 @@
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tufte.css') }}">
     <link rel="stylesheet" href="{{ url_for('pygments_css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
+    {% if page %}
     <title>YYiki: {{ page.title }}</title>
+    {% else %}
+    <title>YYiki</title>
+    {% endif %}
   </head>
   <body>
-    <div id="searchform">
-      <form action="/search" method="post" accept-charset="utf-8">
-        {{ form.csrf_token }} 
-        {{ form.query() }}
-        <input type="submit" value="go" name="Search" id="Search"/>
-      </form>
-    </div>
-    <div class="container">
-      {% block content %}{% endblock %}
-    </div>
+    {% block content %}
+    {% endblock %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.3/mousetrap.min.js"></script>
     <script charset="utf-8">
       Mousetrap.bind('h', function() {window.location.href = '/wiki/Home';}); 
+      Mousetrap.bind('?', function() {window.location.href = '/wiki/Help';}); 
+      Mousetrap.bind('c', function() {window.location.href = '/list/';}); 
+      Mousetrap.bind('l', function() {window.location.href = '/list/';}); 
+      Mousetrap.bind('e', function() {
+        window.location.href = '/edit' + window.location.pathname.replace('/wiki','');}); 
       Mousetrap.bind('/', function() {
         var form = document.getElementById("searchform")
         form.style.display="block";
-        var query = document.getElementById("query").focus();
+        var query = document.getElementById("query")
+        query.focus();
+      });
+      Mousetrap.bind("esc", function() {
+        document.getElementById("searchform").style.display="none";
       });
     </script>
   </body>

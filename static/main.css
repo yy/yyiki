@@ -1,3 +1,35 @@
 #searchform {
   display: none;
+  position: absolute;
+  right: 250px;
+  top: 5px;
+}
+
+.codehilite {
+  width: 55%;
+  padding: 0.3rem 1rem;
+}
+
+pre {
+  overflow-x:auto; 
+}
+
+.timestamp {
+  font-size: 1rem;
+  color: #888;
+}
+
+form textarea {
+  width: 55%;
+  max-width: 55%;
+  font-size: 1.2rem;
+  font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace!important;
+}
+
+form textarea#content {
+  height: 500px;
+}
+form textarea#pagemeta {
+  margin-top: 2rem;
+  height: 100px;
 }
