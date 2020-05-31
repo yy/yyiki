@@ -24,13 +24,15 @@
       Mousetrap.bind('?', function() {window.location.href = '/wiki/Help';}); 
       Mousetrap.bind('c', function() {window.location.href = '/list/';}); 
       Mousetrap.bind('l', function() {window.location.href = '/list/';}); 
-      Mousetrap.bind('e', function() {
-        window.location.href = '/edit' + window.location.pathname.replace('/wiki','');}); 
+      Mousetrap.bind('n', function() {window.location.href = '/new/';}); 
+      if (!window.location.pathname.startsWith("/list")) {
+        Mousetrap.bind('e', function() {
+          window.location.href = '/edit' + window.location.pathname.replace('/wiki','');}); 
+      }
       Mousetrap.bind('/', function() {
         var form = document.getElementById("searchform")
         form.style.display="block";
         var query = document.getElementById("query")
-        query.focus();
       });
       Mousetrap.bind("esc", function() {
         document.getElementById("searchform").style.display="none";

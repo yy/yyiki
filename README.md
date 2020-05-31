@@ -9,4 +9,3 @@ As yyiki is designed as a personal wiki software, simplicity is the primary prin
 - Git and flatfiles: yyiki is also a git repository. This removes the complexity of database and makes back up straightforward. 
 - Python: https://xkcd.com/353/
 
-

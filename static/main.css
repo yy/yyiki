@@ -22,6 +22,9 @@ pre {
 form textarea {
   width: 55%;
   max-width: 55%;
+  min-width: 55%;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
   font-size: 1.2rem;
   font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace!important;
 }
@@ -30,6 +33,18 @@ form textarea#content {
   height: 500px;
 }
 form textarea#pagemeta {
-  margin-top: 2rem;
   height: 100px;
+}
+
+form label {
+  font-size:1.5rem;
+}
+
+input#path {
+  width: 55%;
+  font-size:2rem;
+  max-width: 55%;
+  min-width: 55%;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
 }

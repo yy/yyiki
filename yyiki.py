@@ -1,4 +1,7 @@
+import difflib
+import glob
 import os
+import subprocess
 from datetime import datetime
 
 import yaml
@@ -7,8 +10,32 @@ from flask_flatpages import FlatPages, pygments_style_defs
 
 from forms import EditForm, SearchForm
 
+
+def path2filename(path):
+    """Convert path to physical file path."""
+    return "{}.md".format(os.path.join(pages.root, path))  # TODO: may not be safe
+
+
+def commit_and_push_changes():
+    GIT_COMMAND = ["git", "-C", "pages"]
+    subprocess.run(GIT_COMMAND + ["add", "*"])
+    subprocess.run(GIT_COMMAND + ["commit", "-m", "edited via yyiki"])
+    os.spawnlp(os.P_NOWAIT, "git", *GIT_COMMAND, "push")
+
+
+def write_page(page):
+    # TODO: check the safety of page.path when there's a space or other
+    # characters in the page.path.
+    filename = "{}.md".format(os.path.join(pages.root, page.path))
+    with open(filename, "w") as f:
+        f.write(yaml.dump(page.meta))
+        f.write("\n")
+        f.write(page.body.replace("\r", ""))
+
+
 app = Flask(__name__)
 
+# Configuration
 app.config["SECRET_KEY"] = "98e3fee0a08d82be883a324c47f3fee1"
 
 app.config["FLATPAGES_ROOT"] = "pages"
@@ -24,12 +51,9 @@ app.config["FLATPAGES_EXTENSION_CONFIGS"] = {
     "mdx_wikilink_plus": {"base_url": "/wiki/"}
 }
 
+# Initialization
+subprocess.run(["git", "-C", "pages", "pull"])
 pages = FlatPages(app)
-
-
-@app.route("/")
-def home():
-    return redirect("/wiki/Home")
 
 
 @app.route("/pygments.css")
@@ -37,55 +61,90 @@ def pygments_css():
     return pygments_style_defs("tango"), 200, {"Content-Type": "text/css"}
 
 
-@app.route("/new/<path:path>/")
-def create_page(path):
-    pass
+@app.route("/")
+def home():
+    return redirect("/wiki/Home")
 
 
 @app.route("/wiki/<path:path>/")
 def show_page(path):
-    page = pages.get_or_404(path)
-    form = SearchForm()
-    template = page.meta.get("template", "page.html")
-    return render_template(template, page=page, form=form)
+    page = pages.get(path)
+    if page:
+        form = SearchForm()
+        template = page.meta.get("template", "page.html")
+        return render_template(template, page=page, form=form)
+    else:
+        return redirect(f"/search/{path}")
 
 
 @app.route("/edit/<path:path>/")
 def edit_page(path):
     page = pages.get(path)
-    form = EditForm()
-    form.path.data = page.path
-    form.content.data = page.body
-    form.pagemeta.data = yaml.dump(page.meta)
-    # filename = "{}.md".format(os.path.join(pages.root, page.path))
-    return render_template("edit.html", page=page, form=form)
+    if page:
+        form = EditForm()
+        form.path.data = page.path
+        form.content.data = page.body
+        form.pagemeta.data = yaml.dump(page.meta)
+        return render_template("edit.html", page=page, form=form)
+    else:
+        redirect(f"/create/{path}")
 
 
-def write_page(page):
-    filename = "{}.md".format(os.path.join(pages.root, page.path))
-    with open(filename, "w") as f:
-        f.write(yaml.dump(page.meta))
-        f.write("\n")
-        f.write(page.body.replace("\r", ""))
+@app.route("/create/<path:path>")
+def create_page(path):
+    filename = path2filename(path)
+    if glob.glob(filename):
+        redirect(f"/edit/{path}")
+    today_iso = datetime.today().strftime("%Y-%m-%d")
+    with open(filename, "w") as fout:
+        fout.write(
+            "\n".join(
+                [
+                    "title: {}".format(path),
+                    "author: y",
+                    "published: {}\n".format(today_iso),
+                    "content",
+                ]
+            )
+        )
+    return redirect(f"/edit/{path}")
+
+
+@app.route("/search/<path:path>")
+def search_page(path):
+    form = SearchForm()
+    matches = difflib.get_close_matches(path, pages._pages.keys(), n=10, cutoff=0.5)
+    page = pages.get(path, {"path": path, "title": path, "page_found": False})
+    try:
+        page_found = page.get("page_found")
+    except AttributeError:
+        page_found = True
+    return render_template(
+        "search.html", page_found=page_found, page=page, matches=matches, form=form
+    )
+
+
+@app.route("/search", methods=["GET", "POST"])
+def search_page_from_form():
+    form = SearchForm()
+    if form.validate_on_submit():
+        return redirect(f"/search/{form.query.data}")
+    else:
+        return redirect("/wiki/Home")
 
 
 @app.route("/save", methods=["GET", "POST"])
-def save_page():
+def update_page():
+    """Update page based on the information coming from the from the edit page.
+    """
     form = EditForm()
     if form.validate_on_submit():
         page = pages.get(form.path.data)
         page.body = form.content.data
         page.meta = yaml.safe_load(form.pagemeta.data)
         write_page(page)
+        commit_and_push_changes()
     return redirect(f"/wiki/{page.path}")
-
-
-@app.route("/search", methods=["GET", "POST"])
-def search_page():
-    form = SearchForm()
-    if form.validate_on_submit():
-        return redirect(f"/wiki/{form.query.data}")
-    return redirect("/wiki/Home")
 
 
 @app.route("/list/")
