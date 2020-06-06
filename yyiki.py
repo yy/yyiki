@@ -137,6 +137,15 @@ def edit_page(path):
         redirect(url_for("create_page", path=path))
 
 
+@app.route("/delete/<path:path>/")
+@login_required
+def delete_page(path):
+    filename = path2filename(path)
+    if glob.glob(filename):
+        subprocess.run(["rm", filename])
+    return redirect(url_for("home"))
+
+
 @app.route("/create/<path:path>")
 @login_required
 def create_page(path):
