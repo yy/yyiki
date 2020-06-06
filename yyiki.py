@@ -9,8 +9,8 @@ import yaml
 from flask import Flask, redirect, render_template, url_for
 from flask_bcrypt import Bcrypt
 from flask_flatpages import FlatPages, pygments_style_defs
-from flask_login import (LoginManager, UserMixin, login_required, login_user,
-                         logout_user)
+from flask_login import (LoginManager, UserMixin, current_user, login_required,
+                         login_user, logout_user)
 from fuzzywuzzy import process as fuzzprocess
 
 from forms import EditForm, LoginForm, SearchForm
@@ -19,6 +19,16 @@ from forms import EditForm, LoginForm, SearchForm
 def path2filename(path):
     """Convert path to physical file path."""
     return "{}.md".format(os.path.join(pages.root, path))  # TODO: may not be safe
+
+
+def get_non_private_page_paths():
+    non_private_page_paths = []
+    for page_path in pages._pages.keys():
+        page = pages.get(page_path)
+        if page.meta.get("private", False):
+            continue
+        non_private_page_paths.append(page_path)
+    return non_private_page_paths
 
 
 def commit_and_push_changes():
@@ -104,6 +114,8 @@ def home():
 def show_page(path):
     page = pages.get(path)
     if page:
+        if page.meta.get("private", False) and not current_user.is_authenticated:
+            return redirect(url_for("login"))
         form = SearchForm()
         template = page.meta.get("template", "page.html")
         return render_template(template, page=page, form=form)
@@ -149,10 +161,14 @@ def create_page(path):
 @app.route("/search/<path:path>")
 def search_page(path):
     form = SearchForm()
+    if current_user.is_authenticated:
+        page_paths = pages._pages.keys()
+    else:
+        page_paths = get_non_private_page_paths()
     matches = [
         match
         for match, score in fuzzprocess.extract(
-            path, pages._pages.keys(), limit=10, scorer=fuzzywuzzy.fuzz.partial_ratio
+            path, page_paths, limit=10, scorer=fuzzywuzzy.fuzz.partial_ratio
         )
     ]
     page = pages.get(path, {"path": path, "title": path, "page_found": False})
@@ -194,6 +210,8 @@ def page_list():
     form = SearchForm()
     articles = []
     for page in pages:
+        if not current_user.is_authenticated and page.meta.get("private", False):
+            continue
         filename = path2filename(page.path)
         mtime = os.path.getmtime(filename)
         isotime = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
