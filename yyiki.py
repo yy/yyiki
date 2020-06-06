@@ -63,7 +63,11 @@ app.config["FLATPAGES_MARKDOWN_EXTENSIONS"] = [
     "mdx_headdown",
 ]
 app.config["FLATPAGES_EXTENSION_CONFIGS"] = {
-    "mdx_wikilink_plus": {"base_url": "/wiki/"}
+    "mdx_wikilink_plus": {
+        "base_url": "/wiki/",
+        "url_whitespace": " ",
+        "label_case": "none",
+    }
 }
 
 # Initialization
