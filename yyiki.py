@@ -1,3 +1,4 @@
+"""A minimal wiki app."""
 import difflib
 import glob
 import os
@@ -5,7 +6,7 @@ import subprocess
 from datetime import datetime
 
 import yaml
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect, render_template, url_for
 from flask_flatpages import FlatPages, pygments_style_defs
 
 from forms import EditForm, SearchForm
@@ -26,7 +27,7 @@ def commit_and_push_changes():
 def write_page(page):
     # TODO: check the safety of page.path when there's a space or other
     # characters in the page.path.
-    filename = "{}.md".format(os.path.join(pages.root, page.path))
+    filename = path2filename(page.path)
     with open(filename, "w") as f:
         f.write(yaml.dump(page.meta))
         f.write("\n")
@@ -63,7 +64,7 @@ def pygments_css():
 
 @app.route("/")
 def home():
-    return redirect("/wiki/Home")
+    return redirect(url_for("show_page", path="Home"))
 
 
 @app.route("/wiki/<path:path>/")
@@ -74,7 +75,7 @@ def show_page(path):
         template = page.meta.get("template", "page.html")
         return render_template(template, page=page, form=form)
     else:
-        return redirect(f"/search/{path}")
+        return redirect(url_for("search_page", path=path))
 
 
 @app.route("/edit/<path:path>/")
@@ -84,17 +85,17 @@ def edit_page(path):
         form = EditForm()
         form.path.data = page.path
         form.content.data = page.body
-        form.pagemeta.data = yaml.dump(page.meta)
+        form.pagemeta.data = yaml.dump(page.meta, allow_unicode=True)
         return render_template("edit.html", page=page, form=form)
     else:
-        redirect(f"/create/{path}")
+        redirect(url_for("create_page", path=path))
 
 
 @app.route("/create/<path:path>")
 def create_page(path):
     filename = path2filename(path)
     if glob.glob(filename):
-        redirect(f"/edit/{path}")
+        redirect(url_for("edit_page", path=path))
     today_iso = datetime.today().strftime("%Y-%m-%d")
     with open(filename, "w") as fout:
         fout.write(
@@ -107,7 +108,7 @@ def create_page(path):
                 ]
             )
         )
-    return redirect(f"/edit/{path}")
+    return redirect(url_for("edit_page", path=path))
 
 
 @app.route("/search/<path:path>")
@@ -128,9 +129,9 @@ def search_page(path):
 def search_page_from_form():
     form = SearchForm()
     if form.validate_on_submit():
-        return redirect(f"/search/{form.query.data}")
+        return redirect(url_for("search_page", path=form.query.data))
     else:
-        return redirect("/wiki/Home")
+        return redirect(url_for("show_page", path="Home"))
 
 
 @app.route("/save", methods=["GET", "POST"])
@@ -144,7 +145,7 @@ def update_page():
         page.meta = yaml.safe_load(form.pagemeta.data)
         write_page(page)
         commit_and_push_changes()
-    return redirect(f"/wiki/{page.path}")
+    return redirect(url_for("show_page", path=page.path))
 
 
 @app.route("/list/")
@@ -152,7 +153,7 @@ def page_list():
     form = SearchForm()
     articles = []
     for page in pages:
-        filename = "{}.md".format(os.path.join(pages.root, page.path))
+        filename = path2filename(page.path)
         mtime = os.path.getmtime(filename)
         isotime = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
         if "published" in page.meta:
