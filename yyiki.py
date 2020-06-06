@@ -5,9 +5,11 @@ import os
 import subprocess
 from datetime import datetime
 
+import fuzzywuzzy
 import yaml
 from flask import Flask, redirect, render_template, url_for
 from flask_flatpages import FlatPages, pygments_style_defs
+from fuzzywuzzy import process as fuzzprocess
 
 from forms import EditForm, SearchForm
 
@@ -114,7 +116,12 @@ def create_page(path):
 @app.route("/search/<path:path>")
 def search_page(path):
     form = SearchForm()
-    matches = difflib.get_close_matches(path, pages._pages.keys(), n=10, cutoff=0.5)
+    matches = [
+        match
+        for match, score in fuzzprocess.extract(
+            path, pages._pages.keys(), limit=10, scorer=fuzzywuzzy.fuzz.partial_ratio
+        )
+    ]
     page = pages.get(path, {"path": path, "title": path, "page_found": False})
     try:
         page_found = page.get("page_found")

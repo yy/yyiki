@@ -1,25 +1,25 @@
 {% extends "layout.html" %}
 {% block content %}
 <article>
-  <h1>{{ page.title }}</h1>
-  <section>
-    <div id="editform">
-      <form action="/save" method="post" accept-charset="utf-8">
-        <div>
-          {{ form.content() }}
-        </div>
-        <div>
-          {{ form.pagemeta() }}
-        </div> 
-        <div>
-          <input type="submit"/>
-        </div>
+    <h1>{{ page.title }}</h1>
+    <section>
+	<div id="editform">
+	    <form action="{{ url_for("update_page") }}" method="post" accept-charset="utf-8">
+		<div>
+		    {{ form.content() }}
+		</div>
+		<div>
+		    {{ form.pagemeta() }}
+		</div> 
+		<div>
+		    <input type="submit"/>
+		</div>
 
-        {{ form.csrf_token }} 
-        {{ form.path() }}
-      </form>
-    </div>
-  </section>
+		{{ form.csrf_token }} 
+		{{ form.path() }}
+	    </form>
+	</div>
+    </section>
 </article>
 
 {% endblock content %}

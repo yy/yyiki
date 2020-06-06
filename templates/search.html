@@ -13,22 +13,21 @@
 	{% if page_found %}
 	<h2>We found</h2>
 	<ul>
-	    <li><a href="/wiki/{{ page.path }}">{{ page.title }}</a></li>
-	</ul>
-	{% else %}
-	<h2>Create a page</h2>
-	<ul>
-	    <li><a href="/create/{{ page.path }}">{{ page.title }}</a></li>
+	    <li><a href="{{ url_for("show_page", path=page.path) }}">{{ page.title }}</a></li>
 	</ul>
 	{% endif %}
-    </section>
-    <section>
 	<h2>Did you mean ...</h2>
 	<ul>
 	    {% for similar_page_path in matches %}
-	    <li><a href="/wiki/{{ similar_page_path }}">{{ similar_page_path }}</a></li>
+	    <li><a href="{{ url_for("show_page", path=similar_page_path) }}">{{ similar_page_path }}</a></li>
 	    {% endfor %}    
 	</ul> 
+	{% if not page_found %}
+	<h2>Or create a page</h2>
+	<ul>
+	    <li><a href="{{ url_for("create_page", path=page.path) }}">{{ page.title }}</a></li>
+	</ul>
+	{% endif %}
     </section>
 </article>
 {% endblock content %}
