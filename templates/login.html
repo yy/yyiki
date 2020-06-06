@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<article>
+    <h1>Login</h1>
+    <section>
+	<div id="loginform">
+	    <form action="" method="POST" accept-charset="utf-8">
+		{{ form.csrf_token }}
+		<fieldset id="login" class="">
+		    <legend>Login</legend>
+		    <div>
+			{{ form.email.label() }}<br>
+			{{ form.email() }}
+		    </div>
+		    <div>
+			{{ form.password.label() }}<br>
+			{{ form.password() }}
+		    </div>
+		    <div>
+			{{ form.remember.label() }}
+			{{ form.remember(checked=True) }}
+		    </div>
+		<div>
+		    {{ form.submit() }}
+		</div>
+		</fieldset>
+	    </form>
+	</div>
+    </section>
+</article>
+{% endblock content %}

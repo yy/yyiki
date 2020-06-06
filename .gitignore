@@ -1,4 +1,5 @@
 pages/
+hashed_admin_password.dat
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

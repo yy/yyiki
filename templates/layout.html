@@ -23,7 +23,7 @@
       Mousetrap.bind('h', function() {window.location.href = '{{ url_for("show_page", path="Home") }}';}); 
       Mousetrap.bind('?', function() {window.location.href = '{{ url_for("show_page", path="Help") }}';}); 
       Mousetrap.bind('c', function() {window.location.href = '{{ url_for("page_list") }}';}); 
-      Mousetrap.bind('l', function() {window.location.href = '{{ url_for("page_list") }}';}); 
+      Mousetrap.bind('l', function() {window.location.href = '{{ url_for("login") }}';}); 
       if (!window.location.pathname.startsWith("{{ url_for("page_list") }}")) {
         Mousetrap.bind('e', function() {
           window.location.href = '/edit' + window.location.pathname.replace('/wiki','');}); 

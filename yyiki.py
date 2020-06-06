@@ -1,5 +1,4 @@
 """A minimal wiki app."""
-import difflib
 import glob
 import os
 import subprocess
@@ -8,10 +7,13 @@ from datetime import datetime
 import fuzzywuzzy
 import yaml
 from flask import Flask, redirect, render_template, url_for
+from flask_bcrypt import Bcrypt
 from flask_flatpages import FlatPages, pygments_style_defs
+from flask_login import (LoginManager, UserMixin, login_required, login_user,
+                         logout_user)
 from fuzzywuzzy import process as fuzzprocess
 
-from forms import EditForm, SearchForm
+from forms import EditForm, LoginForm, SearchForm
 
 
 def path2filename(path):
@@ -57,6 +59,35 @@ app.config["FLATPAGES_EXTENSION_CONFIGS"] = {
 # Initialization
 subprocess.run(["git", "-C", "pages", "pull"])
 pages = FlatPages(app)
+bcrypt = Bcrypt(app)
+hashed_password = open("hashed_admin_password.dat", "rb").read()
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+
+class User(UserMixin):
+    def __init__(self, user_id, email, hashed_password):
+        self.id = user_id
+        self.email = email
+        self.hashed_password = hashed_password
+
+    @classmethod
+    def get(cls, user_id):
+        if user_id == "0":
+            return admin_user
+        else:
+            return None
+
+
+admin_user = User(
+    user_id="0", email="yongyeol@gmail.com", hashed_password=hashed_password
+)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 
 @app.route("/pygments.css")
@@ -81,6 +112,7 @@ def show_page(path):
 
 
 @app.route("/edit/<path:path>/")
+@login_required
 def edit_page(path):
     page = pages.get(path)
     if page:
@@ -94,6 +126,7 @@ def edit_page(path):
 
 
 @app.route("/create/<path:path>")
+@login_required
 def create_page(path):
     filename = path2filename(path)
     if glob.glob(filename):
@@ -142,6 +175,7 @@ def search_page_from_form():
 
 
 @app.route("/save", methods=["GET", "POST"])
+@login_required
 def update_page():
     """Update page based on the information coming from the from the edit page.
     """
@@ -168,6 +202,24 @@ def page_list():
 
     sorted_article_list = sorted(articles, reverse=True, key=lambda p: p[0])
     return render_template("list.html", pages=sorted_article_list, form=form)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == admin_user.email and bcrypt.check_password_hash(
+            admin_user.hashed_password, form.password.data
+        ):
+            login_user(admin_user, remember=form.remember.data)
+            return redirect(url_for("home"))
+    return render_template("login.html", title="Login", form=form)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":

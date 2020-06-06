@@ -19,6 +19,22 @@ pre {
   color: #888;
 }
 
+#loginform {
+  width: 55%;
+  max-width: 55%;
+  min-width: 55%;
+}
+
+#loginform input[type=text], input[type=password] {
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+  width: 70%;
+}
+#loginform input[type=checkbox] {
+  width:5%;
+  margin-bottom: 1.2rem;
+}
+
 form textarea {
   width: 55%;
   max-width: 55%;
