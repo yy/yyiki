@@ -1,5 +1,6 @@
 pages/
 hashed_admin_password.dat
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
