@@ -21,12 +21,17 @@ def get_non_private_page_paths(pages):
 
 
 def commit_and_push_changes():
+    repo = git.Repo("pages")
+    repo.git.add(A=True)
+    repo.git.commit(m="edited via yyiki", author="YY Ahn <yongyeol@gmail.com>")
+    # repo.git.push()
+
     GIT_COMMAND = ["git", "-C", "pages"]
-    subprocess.run(GIT_COMMAND + ["add", "*"])
-    subprocess.run(
-        GIT_COMMAND
-        + ["commit", "--author='YY Ahn <yongyeol@gmail.com>'", "-m", "edited via yyiki"]
-    )
+    # subprocess.run(GIT_COMMAND + ["add", "*"])
+    # subprocess.run(
+    # GIT_COMMAND
+    # + ["commit", "--author='YY Ahn <yongyeol@gmail.com>'", "-m", "edited via yyiki"]
+    # )
     os.spawnlp(os.P_NOWAIT, "git", *GIT_COMMAND, "push")
 
 

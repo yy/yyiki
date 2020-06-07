@@ -168,7 +168,6 @@ def update_page():
         page.body = form.content.data
         page.meta = yaml.safe_load(form.pagemeta.data)
         write_page(pages, page)
-        os.system("whoami")
         commit_and_push_changes()
     pages.reload()
     return redirect(url_for("show_page", path=page.path))
