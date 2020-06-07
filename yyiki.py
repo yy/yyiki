@@ -168,6 +168,7 @@ def update_page():
         page.body = form.content.data
         page.meta = yaml.safe_load(form.pagemeta.data)
         write_page(pages, page)
+        os.system("whoami")
         commit_and_push_changes()
     pages.reload()
     return redirect(url_for("show_page", path=page.path))
@@ -189,7 +190,7 @@ def page_list():
         if "published" in page.meta:
             articles.append((mtime, isotime, page))
 
-    sorted_article_list = sorted(articles, reverse=True, key=lambda p: p[0])
+    sorted_article_list = sorted(articles, reverse=True, key=lambda p: p[0])[:100]
     return render_template("list.html", pages=sorted_article_list, form=form)
 
 
