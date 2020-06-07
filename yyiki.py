@@ -21,7 +21,6 @@ app = Flask(__name__)
 
 # Configuration
 app.config.from_object('default_settings')
-#app.config.from_envvar("YYIKI_SETTINGS")
 
 # Initialization
 subprocess.run(["git", "-C", "pages", "pull"])
