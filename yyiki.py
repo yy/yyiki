@@ -20,7 +20,7 @@ from utils import (commit_and_push_changes, get_non_private_page_paths,
 app = Flask(__name__)
 
 # Configuration
-app.config.from_object('default_settings')
+app.config.from_object("default_settings")
 
 # Initialization
 subprocess.run(["git", "-C", "pages", "pull"])
@@ -99,6 +99,7 @@ def delete_page(path):
     filename = path2filename(pages, path)
     if glob.glob(filename):
         subprocess.run(["rm", filename])
+    pages.reload()
     return redirect(url_for("home"))
 
 
@@ -120,6 +121,7 @@ def create_page(path):
                 ]
             )
         )
+    pages.reload()
     return redirect(url_for("edit_page", path=path))
 
 
@@ -167,6 +169,7 @@ def update_page():
         page.meta = yaml.safe_load(form.pagemeta.data)
         write_page(pages, page)
         commit_and_push_changes()
+    pages.reload()
     return redirect(url_for("show_page", path=page.path))
 
 
