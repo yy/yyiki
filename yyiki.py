@@ -20,7 +20,8 @@ from utils import (commit_and_push_changes, get_non_private_page_paths,
 app = Flask(__name__)
 
 # Configuration
-app.config.from_envvar("YYIKI_SETTINGS")
+app.config.from_object('default_settings')
+#app.config.from_envvar("YYIKI_SETTINGS")
 
 # Initialization
 subprocess.run(["git", "-C", "pages", "pull"])

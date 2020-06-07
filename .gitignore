@@ -1,6 +1,7 @@
 pages/
 hashed_admin_password.dat
 settings.cfg
+default_settings.py
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
