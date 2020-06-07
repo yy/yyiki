@@ -68,6 +68,7 @@ def home():
 
 @app.route("/wiki/<path:path>/")
 def show_page(path):
+    pages.reload()
     page = pages.get(path)
     if page:
         if page.meta.get("private", False) and not current_user.is_authenticated:
@@ -164,12 +165,12 @@ def update_page():
     """
     form = EditForm()
     if form.validate_on_submit():
+        pages.reload()
         page = pages.get(form.path.data)
         page.body = form.content.data
         page.meta = yaml.safe_load(form.pagemeta.data)
         write_page(pages, page)
         commit_and_push_changes()
-    pages.reload()
     return redirect(url_for("show_page", path=page.path))
 
 
