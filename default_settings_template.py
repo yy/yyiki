@@ -7,7 +7,9 @@ FLATPAGES_MARKDOWN_EXTENSIONS = [
     "mdx_wikilink_plus",
     "mdx_linkify",
     "mdx_headdown",
-    "footnotes",
+    "extra",
+    "smarty",
+    "sane_lists",
 ]
 FLATPAGES_EXTENSION_CONFIGS = {
     "mdx_wikilink_plus": {
