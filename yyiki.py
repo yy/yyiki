@@ -90,7 +90,7 @@ def edit_page(path):
         form.pagemeta.data = yaml.dump(page.meta, allow_unicode=True)
         return render_template("edit.html", page=page, form=form)
     else:
-        redirect(url_for("create_page", path=path))
+        return redirect(url_for("create_page", path=path))
 
 
 @app.route("/delete/<path:path>/")
