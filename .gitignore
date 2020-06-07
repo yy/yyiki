@@ -1,8 +1,9 @@
-pages/
+*pages/
 hashed_admin_password.dat
 settings.cfg
 default_settings.py
 .DS_Store
+*.un~
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
