@@ -108,7 +108,7 @@ def delete_page(path):
 def create_page(path):
     filename = path2filename(pages, path)
     if glob.glob(filename):
-        redirect(url_for("edit_page", path=path))
+        return redirect(url_for("edit_page", path=path))
     today_iso = datetime.today().strftime("%Y-%m-%d")
     with open(filename, "w") as fout:
         fout.write(
