@@ -175,6 +175,7 @@ def update_page():
 
 @app.route("/list/")
 def page_list():
+    pages.reload()
     form = SearchForm()
     articles = []
     for page in pages:
