@@ -14,61 +14,13 @@ from flask_login import (LoginManager, UserMixin, current_user, login_required,
 from fuzzywuzzy import process as fuzzprocess
 
 from forms import EditForm, LoginForm, SearchForm
-
-
-def path2filename(path):
-    """Convert path to physical file path."""
-    return "{}.md".format(os.path.join(pages.root, path))  # TODO: may not be safe
-
-
-def get_non_private_page_paths():
-    non_private_page_paths = []
-    for page_path in pages._pages.keys():
-        page = pages.get(page_path)
-        if page.meta.get("private", False):
-            continue
-        non_private_page_paths.append(page_path)
-    return non_private_page_paths
-
-
-def commit_and_push_changes():
-    GIT_COMMAND = ["git", "-C", "pages"]
-    subprocess.run(GIT_COMMAND + ["add", "*"])
-    subprocess.run(GIT_COMMAND + ["commit", "-m", "edited via yyiki"])
-    os.spawnlp(os.P_NOWAIT, "git", *GIT_COMMAND, "push")
-
-
-def write_page(page):
-    # TODO: check the safety of page.path when there's a space or other
-    # characters in the page.path.
-    filename = path2filename(page.path)
-    with open(filename, "w") as f:
-        f.write(yaml.dump(page.meta))
-        f.write("\n")
-        f.write(page.body.replace("\r", ""))
-
+from utils import (commit_and_push_changes, get_non_private_page_paths,
+                   path2filename, write_page)
 
 app = Flask(__name__)
 
 # Configuration
-app.config["SECRET_KEY"] = "98e3fee0a08d82be883a324c47f3fee1"
-
-app.config["FLATPAGES_ROOT"] = "pages"
-app.config["FLATPAGES_EXTENSION"] = ".md"
-app.config["FLATPAGES_MARKDOWN_EXTENSIONS"] = [
-    "codehilite",
-    "markdown_katex",
-    "mdx_wikilink_plus",
-    "mdx_linkify",
-    "mdx_headdown",
-]
-app.config["FLATPAGES_EXTENSION_CONFIGS"] = {
-    "mdx_wikilink_plus": {
-        "base_url": "/wiki/",
-        "url_whitespace": " ",
-        "label_case": "none",
-    }
-}
+app.config.from_envvar("YYIKI_SETTINGS")
 
 # Initialization
 subprocess.run(["git", "-C", "pages", "pull"])
@@ -144,7 +96,7 @@ def edit_page(path):
 @app.route("/delete/<path:path>/")
 @login_required
 def delete_page(path):
-    filename = path2filename(path)
+    filename = path2filename(pages, path)
     if glob.glob(filename):
         subprocess.run(["rm", filename])
     return redirect(url_for("home"))
@@ -153,7 +105,7 @@ def delete_page(path):
 @app.route("/create/<path:path>")
 @login_required
 def create_page(path):
-    filename = path2filename(path)
+    filename = path2filename(pages, path)
     if glob.glob(filename):
         redirect(url_for("edit_page", path=path))
     today_iso = datetime.today().strftime("%Y-%m-%d")
@@ -177,7 +129,7 @@ def search_page(path):
     if current_user.is_authenticated:
         page_paths = pages._pages.keys()
     else:
-        page_paths = get_non_private_page_paths()
+        page_paths = get_non_private_page_paths(pages)
     matches = [
         match
         for match, score in fuzzprocess.extract(
@@ -213,7 +165,7 @@ def update_page():
         page = pages.get(form.path.data)
         page.body = form.content.data
         page.meta = yaml.safe_load(form.pagemeta.data)
-        write_page(page)
+        write_page(pages, page)
         commit_and_push_changes()
     return redirect(url_for("show_page", path=page.path))
 
@@ -225,7 +177,7 @@ def page_list():
     for page in pages:
         if not current_user.is_authenticated and page.meta.get("private", False):
             continue
-        filename = path2filename(page.path)
+        filename = path2filename(pages, page.path)
         mtime = os.path.getmtime(filename)
         isotime = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
         if "published" in page.meta:
