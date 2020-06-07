@@ -179,6 +179,8 @@ def page_list():
         if not current_user.is_authenticated and page.meta.get("private", False):
             continue
         filename = path2filename(pages, page.path)
+        if not glob.glob(filename):
+            continue
         mtime = os.path.getmtime(filename)
         isotime = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
         if "published" in page.meta:
