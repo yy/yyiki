@@ -65,32 +65,31 @@ input#path {
   margin-bottom: 2rem;
 }
 
-header > nav.group, body footer {
+header > nav.group {
     width: 95%;
     padding-top: 2rem;
 }
 
-nav.group a.active:before{
-    content:"\0003c\000a0";
+a:link {
+    color: #111;
 }
-nav.group a.active:after{
-    content:"\000a0\0003e";
-}
-
-header > nav a:link, a:visited {
+header > nav a:link {
     font-size: 1.2rem;
     font-family: "Gill Sans", "Gill Sans MT", "Lato", Calibri, sans-serif;;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: #AF5555;
+    color: #a00000;
     padding-top: 1.5rem;
     display: inline-block;
     float: left;
     margin-top: 0;
     margin-bottom: 0;
-    padding-right: 3rem;
+    padding-right: 4rem;
     vertical-align: baseline;
     background: unset;
     text-shadow: unset;
 }
-
+footer {
+  padding: 4rem 0rem;
+}

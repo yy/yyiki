@@ -19,6 +19,7 @@
       <nav class="group">
         <a href="{{ url_for("show_page", path="YYiki") }}">About</a>
         <a href="{{ url_for("show_page", path="yy") }}">YY</a>
+        <a href="{{ url_for("show_page", path="Help") }}">Help</a>
         <a href="{{ url_for("page_list") }}">Recent Changes</a>
       </nav>
     </header>
@@ -48,6 +49,10 @@
         var query = document.getElementById("query");
         query.focus();
       });
+      Mousetrap.bind('g', function() {
+        var page = prompt("Which page?");
+        window.location.href = '{{ url_for("show_page", path="") }}/' + page;
+      }); 
       Mousetrap.bind("esc", function() {
         document.getElementById("searchform").style.display="none";
       });
