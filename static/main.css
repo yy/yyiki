@@ -90,6 +90,9 @@ header > nav a:link {
     background: unset;
     text-shadow: unset;
 }
+header > nav a:visited {
+    color: #a00000;
+}
 footer {
   padding: 4rem 0rem;
 }
