@@ -20,7 +20,7 @@ from utils import (commit_and_push_changes, get_non_private_page_paths,
 app = Flask(__name__)
 
 # Configuration
-app.config.from_object("default_settings")
+app.config.from_object("settings")
 
 # Initialization
 subprocess.run(["git", "-C", "pages", "pull"])
@@ -68,7 +68,7 @@ def home():
 
 @app.route("/wiki/<path:path>/")
 def show_page(path):
-    pages.reload()
+    # pages.reload()
     page = pages.get(path)
     if page:
         if page.meta.get("private", False) and not current_user.is_authenticated:
@@ -100,7 +100,7 @@ def delete_page(path):
     filename = path2filename(pages, path)
     if glob.glob(filename):
         subprocess.run(["rm", filename])
-    pages.reload()
+    # pages.reload()
     return redirect(url_for("home"))
 
 
@@ -122,7 +122,7 @@ def create_page(path):
                 ]
             )
         )
-    pages.reload()
+    # pages.reload()
     return redirect(url_for("edit_page", path=path))
 
 
@@ -165,7 +165,7 @@ def update_page():
     """
     form = EditForm()
     if form.validate_on_submit():
-        pages.reload()
+        # pages.reload()
         page = pages.get(form.path.data)
         page.body = form.content.data
         page.meta = yaml.safe_load(form.pagemeta.data)
@@ -176,7 +176,7 @@ def update_page():
 
 @app.route("/list/")
 def page_list():
-    pages.reload()
+    # pages.reload()
     form = SearchForm()
     articles = []
     for page in pages:

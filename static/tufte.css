@@ -185,6 +185,7 @@ figure.fullwidth figcaption {
 a:link,
 a:visited {
   color: #AF5555;
+  color: #111;
 }
 
 .no-tufte-underline:link {

@@ -15,13 +15,20 @@
     {% endif %}
   </head>
   <body>
+    <header>
+      <nav class="group">
+        <a href="{{ url_for("show_page", path="YYiki") }}">About</a>
+        <a href="{{ url_for("show_page", path="yy") }}">YY</a>
+        <a href="{{ url_for("page_list") }}">Recent Changes</a>
+      </nav>
+    </header>
 
     {% block content %}
     {% endblock %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.3/mousetrap.min.js"></script>
     <script charset="utf-8">
-      Mousetrap.bind('h', function() {window.location.href = '{{ url_for("show_page", path="Home") }}';}); 
+      Mousetrap.bind('h', function() {window.location.href = '{{ url_for("home") }}';}); 
       Mousetrap.bind('?', function() {window.location.href = '{{ url_for("show_page", path="Help") }}';}); 
       Mousetrap.bind('c', function() {window.location.href = '{{ url_for("page_list") }}';}); 
       Mousetrap.bind('l', function() {window.location.href = '{{ url_for("login") }}';}); 
