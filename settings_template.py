@@ -1,6 +1,7 @@
 SECRET_KEY = "your secret key here"
 FLATPAGES_ROOT = "pages"
 FLATPAGES_EXTENSION = ".md"
+FLATPAGES_AUTO_RELOAD = True
 FLATPAGES_MARKDOWN_EXTENSIONS = [
     "codehilite",
     "markdown_katex",
