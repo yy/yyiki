@@ -1,7 +1,6 @@
 *pages/
 hashed_admin_password.dat
-settings.cfg
-default_settings.py
+settings.py
 .DS_Store
 *.un~
 
