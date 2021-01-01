@@ -12,7 +12,7 @@
     <section>
 	<ul>
 	    {% for mtime, timestamp, page in pages %}
-	    <li><span class="timestamp">({{ timestamp }})</span> &nbsp; <a href="{{ url_for("show_page", path=page.path) }}">{{ page.title }}</a></li>
+	    <li><span class="timestamp">({{ timestamp }})</span> <br /> <a href="{{ url_for("show_page", path=page.path) }}">{{ page.path }}</a></li>
 	    {% endfor %}    
 	</ul> 
     </section>
