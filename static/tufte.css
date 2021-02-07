@@ -15,7 +15,7 @@ body {
     margin-right: auto;
     padding-left: 12.5%;
     font-family: Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
-    background-color: #fffff8;
+    background-color: #f3f3f0;
     color: #111;
     max-width: 1400px;
     counter-reset: sidenote-counter; 
@@ -27,6 +27,7 @@ h1 {
     margin-bottom: 1.5rem;
     font-size: 3.2rem;
     line-height: 1; 
+    color: #101010;
 }
 
 h2 {
@@ -36,15 +37,27 @@ h2 {
     margin-bottom: 1.4rem;
     font-size: 2.2rem;
     line-height: 1; 
+    color: #701010;
 }
 
 h3 {
+    font-family: Avenir, Futura, Roboto, Helvetica, sans-serif; 
     font-style: italic;
+    font-style: normal;
     font-weight: 400;
     font-size: 1.7rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.4rem;
+    line-height: 1; 
+}
+h4 {
+    font-style: normal;
+    font-weight: 800;
+    font-size: 1.1rem;
     margin-top: 2rem;
     margin-bottom: 1.4rem;
     line-height: 1; 
+
 }
 
 hr {
@@ -186,6 +199,7 @@ figure.fullwidth figcaption {
 a:link,
 a:visited {
   color: #AF5555;
+  color: #701010;
   color: #111;
 }
 
@@ -196,13 +210,13 @@ a:visited {
 
 a:link, .tufte-underline, .hover-tufte-underline:hover {
     text-decoration: none;
-    background: -webkit-linear-gradient(#fffff8, #fffff8), -webkit-linear-gradient(#fffff8, #fffff8), -webkit-linear-gradient(currentColor, currentColor);
-    background: linear-gradient(#fffff8, #fffff8), linear-gradient(#fffff8, #fffff8), linear-gradient(currentColor, currentColor);
+    background: -webkit-linear-gradient(#f3f3f0, #f3f3f0), -webkit-linear-gradient(#f3f3f0, #f3f3f0), -webkit-linear-gradient(currentColor, currentColor);
+    background: linear-gradient(#f3f3f0, #f3f3f0), linear-gradient(#f3f3f0, #f3f3f0), linear-gradient(currentColor, currentColor);
     -webkit-background-size: 0.05em 1px, 0.05em 1px, 1px 1px;
     -moz-background-size: 0.05em 1px, 0.05em 1px, 1px 1px;
     background-size: 0.05em 1px, 0.05em 1px, 1px 1px;
     background-repeat: no-repeat, no-repeat, repeat-x;
-    text-shadow: 0.03em 0 #fffff8, -0.03em 0 #fffff8, 0 0.03em #fffff8, 0 -0.03em #fffff8, 0.06em 0 #fffff8, -0.06em 0 #fffff8, 0.09em 0 #fffff8, -0.09em 0 #fffff8, 0.12em 0 #fffff8, -0.12em 0 #fffff8, 0.15em 0 #fffff8, -0.15em 0 #fffff8;
+    text-shadow: 0.03em 0 #f3f3f0, -0.03em 0 #f3f3f0, 0 0.03em #f3f3f0, 0 -0.03em #f3f3f0, 0.06em 0 #f3f3f0, -0.06em 0 #f3f3f0, 0.09em 0 #f3f3f0, -0.09em 0 #f3f3f0, 0.12em 0 #f3f3f0, -0.12em 0 #f3f3f0, 0.15em 0 #f3f3f0, -0.15em 0 #f3f3f0;
     background-position: 0% 93%, 100% 93%, 0% 93%; 
 }
 
