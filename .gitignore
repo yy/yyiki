@@ -1,5 +1,6 @@
 *pages/
 static/images/
+static/images
 hashed_admin_password.dat
 settings.py
 .DS_Store
