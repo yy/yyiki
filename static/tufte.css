@@ -45,10 +45,11 @@ h3 {
     font-style: italic;
     font-style: normal;
     font-weight: 400;
-    font-size: 1.7rem;
-    margin-top: 2.5rem;
+    font-size: 1.8rem;
+    margin-top: 3rem;
     margin-bottom: 1.4rem;
     line-height: 1; 
+    color: #777;
 }
 h4 {
     font-style: normal;
