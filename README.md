@@ -10,3 +10,9 @@ yyiki is designed as a personal wiki software and simplicity is the primary prin
 - Git and flatfiles: yyiki is also a git repository. This removes the complexity of database and makes back-up straightforward. It also opens up the possibility of using other offline apps (e.g. [Obsidian](https://obsidian.md)). 
 - Python (https://xkcd.com/353/) + [Flaks](https://palletsprojects.com/p/flask/) + [Flask-FlatPages](https://pythonhosted.org/Flask-FlatPages/) allows concise code. 
 
+# Installation
+
+1. copy `settings_template.py` to `settings.py`.
+2. copy `templates/layout_template.html` to `templates/layout.html`
+3. put hashed admin password into `hashed_admin_password.dat`. 
+4. run `poetry shell` and `poetry install`

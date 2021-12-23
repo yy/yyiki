@@ -9,13 +9,23 @@ import yaml
 from flask import Flask, redirect, render_template, url_for
 from flask_bcrypt import Bcrypt
 from flask_flatpages import FlatPages, pygments_style_defs
-from flask_login import (LoginManager, UserMixin, current_user, login_required,
-                         login_user, logout_user)
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 from fuzzywuzzy import process as fuzzprocess
 
 from forms import EditForm, LoginForm, SearchForm
-from utils import (commit_and_push_changes, get_non_private_page_paths,
-                   path2filename, write_page)
+from utils import (
+    commit_and_push_changes,
+    get_non_private_page_paths,
+    path2filename,
+    write_page,
+)
 
 app = Flask(__name__)
 
@@ -161,8 +171,7 @@ def search_page_from_form():
 @app.route("/save", methods=["GET", "POST"])
 @login_required
 def update_page():
-    """Update page based on the information coming from the from the edit page.
-    """
+    """Update page based on the information coming from the from the edit page."""
     form = EditForm()
     if form.validate_on_submit():
         # pages.reload()
