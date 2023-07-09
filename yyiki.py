@@ -189,17 +189,21 @@ def page_list():
     form = SearchForm()
     articles = []
     for page in pages:
-        if not current_user.is_authenticated and page.meta.get("private", False):
-            continue
-        filename = path2filename(pages, page.path)
-        if not glob.glob(filename):
-            continue
-        mtime = os.path.getmtime(filename)
-        isotime = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
-        if "published" in page.meta:
-            articles.append((mtime, isotime, page))
+        try:
+            if not current_user.is_authenticated and page.meta.get("private", False):
+                continue
+            filename = path2filename(pages, page.path)
+            if not glob.glob(filename):
+                continue
+            mtime = os.path.getmtime(filename)
+            isotime = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
+            if "published" in page.meta:
+                articles.append((mtime, isotime, page))
+        except Exception as e:
+            print(e)
+            print(page.path)
 
-    sorted_article_list = sorted(articles, reverse=True, key=lambda p: p[0])[:100]
+    sorted_article_list = sorted(articles, reverse=True, key=lambda p: p[0])[:10]
     return render_template("list.html", pages=sorted_article_list, form=form)
 
 
