@@ -81,8 +81,9 @@ def show_page(path):
     # pages.reload()
     page = pages.get(path)
     if page:
-        if page.meta.get("private", False) and not current_user.is_authenticated:
-            return redirect(url_for("login"))
+        if not current_user.is_authenticated:
+            if page.meta.get("private", False) or not page.meta.get("public", False):
+                return redirect(url_for("login"))
         form = SearchForm()
         template = page.meta.get("template", "page.html")
         return render_template(template, page=page, form=form)
@@ -190,8 +191,9 @@ def page_list():
     articles = []
     for page in pages:
         try:
-            if not current_user.is_authenticated and page.meta.get("private", False):
-                continue
+            if not current_user.is_authenticated:
+                if page.meta.get("private", False) or not page.meta.get("public", False):
+                    continue
             filename = path2filename(pages, page.path)
             if not glob.glob(filename):
                 continue
