@@ -14,7 +14,7 @@ def get_non_private_page_paths(pages):
     non_private_page_paths = []
     for page_path in pages._pages.keys():
         page = pages.get(page_path)
-        if page.meta.get("private", False) or not page.meta.get("public", False):
+        if page.meta.get("private", False): 
             continue
         non_private_page_paths.append(page_path)
     return non_private_page_paths
