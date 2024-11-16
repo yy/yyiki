@@ -1,0 +1,25 @@
+bcrypt
+Flask
+fuzzywuzzy
+Flask-Bcrypt
+Flask-FlatPages
+Flask-Login
+Flask-WTF
+python-Levenshtein
+email-validator
+GitPython
+markdown-katex
+pymdown-extensions
+Markdown
+mdx-linkify
+markdown-headdown
+mdx-wikilink-plus
+Pygments
+python-markdown-math
+werkzeug
+
+# dev
+ruff
+isort
+pynvim
+flake8
