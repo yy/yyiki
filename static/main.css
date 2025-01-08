@@ -12,12 +12,13 @@ p.subtitle{
 }
 
 .codehilite {
-  width: 55%;
+  width: 87.5%;
   padding: 0.3rem 1rem;
 }
 
 pre {
   overflow-x:auto; 
+  width: 100%;
 }
 
 .timestamp {
