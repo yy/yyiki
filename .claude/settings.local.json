@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(python3:*)",
+      "Bash(python test:*)",
+      "Bash(/usr/bin/python3:*)",
+      "Bash(rm:*)",
+      "Bash(cp:*)",
+      "Bash(uv run:*)",
+      "Bash(mkdir:*)",
+      "Bash(git init:*)"
+    ],
+    "deny": []
+  }
+}

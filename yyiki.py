@@ -6,7 +6,7 @@ from datetime import datetime
 
 import fuzzywuzzy
 import yaml
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, abort, redirect, render_template, url_for
 from flask_bcrypt import Bcrypt
 from flask_flatpages import FlatPages, pygments_style_defs
 from flask_login import (
@@ -108,33 +108,39 @@ def edit_page(path):
 @app.route("/delete/<path:path>/")
 @login_required
 def delete_page(path):
-    filename = path2filename(pages, path)
-    if glob.glob(filename):
-        subprocess.run(["rm", filename])
-    # pages.reload()
-    return redirect(url_for("home"))
+    try:
+        filename = path2filename(pages, path)
+        if glob.glob(filename):
+            subprocess.run(["rm", filename])
+        # pages.reload()
+        return redirect(url_for("home"))
+    except ValueError:
+        abort(400)  # Bad Request for invalid paths
 
 
 @app.route("/create/<path:path>")
 @login_required
 def create_page(path):
-    filename = path2filename(pages, path)
-    if glob.glob(filename):
-        return redirect(url_for("edit_page", path=path))
-    today_iso = datetime.today().strftime("%Y-%m-%d")
-    with open(filename, "w") as fout:
-        fout.write(
-            "\n".join(
-                [
-                    "title: {}".format(path),
-                    "author: y",
-                    "published: {}\n".format(today_iso),
-                    "content",
-                ]
+    try:
+        filename = path2filename(pages, path)
+        if glob.glob(filename):
+            return redirect(url_for("edit_page", path=path))
+        today_iso = datetime.today().strftime("%Y-%m-%d")
+        with open(filename, "w") as fout:
+            fout.write(
+                "\n".join(
+                    [
+                        "title: {}".format(path),
+                        "author: y",
+                        "published: {}\n".format(today_iso),
+                        "content",
+                    ]
+                )
             )
-        )
-    # pages.reload()
-    return redirect(url_for("edit_page", path=path))
+        # pages.reload()
+        return redirect(url_for("edit_page", path=path))
+    except ValueError:
+        abort(400)  # Bad Request for invalid paths
 
 
 @app.route("/search/<path:path>")
@@ -179,8 +185,11 @@ def update_page():
         page = pages.get(form.path.data)
         page.body = form.content.data
         page.meta = yaml.safe_load(form.pagemeta.data)
-        write_page(pages, page)
-        commit_and_push_changes()
+        try:
+            write_page(pages, page)
+            commit_and_push_changes()
+        except ValueError:
+            abort(400)  # Bad Request for invalid paths
     return redirect(url_for("show_page", path=page.path))
 
 
